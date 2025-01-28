@@ -5,6 +5,11 @@
         "nyholm/psr7": "^1.8",
         "guzzlehttp/guzzle": "^7.9"
     },
+    "autoload": {
+        "psr-4": {
+            "RPurinton\\o1\\": "src/"
+        }
+    },
     "config": {
         "allow-plugins": {
             "php-http/discovery": true
