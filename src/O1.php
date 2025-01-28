@@ -57,13 +57,13 @@ class O1
                 continue;
             }
             echo (self::thinking);
-            $input = ['role' => 'user', 'content' => ['type' => 'text', 'text' => $input]];
+            $input = ['role' => 'user', 'content' => [['type' => 'text', 'text' => $input]]];
             $this->saveHistory($input);
             $response = $this->o1->chat()->create($this->request);
             $response = $response->choices[0]->message->content;
-            $response = ['role' => 'assistant', 'content' => ['type' => 'text', 'text' => $response]];
+            $response = ['role' => 'assistant', 'content' => [['type' => 'text', 'text' => $response]]];
             $this->saveHistory($response);
-            echo ("\r{$response['content']['text']}\n");
+            echo ("\r{$response['content'][0]['text']}\n");
         }
     }
 }
