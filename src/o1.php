@@ -1,6 +1,6 @@
 <?php
 
-namespace RPurinton\o1;
+namespace RPurinton\O1;
 
 use OpenAI\Client;
 
