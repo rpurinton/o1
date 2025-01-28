@@ -22,6 +22,7 @@ class O1
     private function loadRequest()
     {
         $request = json_decode(self::request_file, true);
+        print_r($request);
         $request['messages'] = array_merge($request['messages'], $this->loadHistory());
     }
 
