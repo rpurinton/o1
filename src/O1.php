@@ -8,6 +8,8 @@ class O1
 {
     const prompt = "o1> ";
     const thinking = "🧠 Thinking...";
+    const request_file = __DIR__ . '/../request.json';
+    const history_file = __DIR__ . '/../history.jsonl';
     private Client $o1;
     private array $request = [];
 
@@ -19,13 +21,13 @@ class O1
 
     private function loadRequest()
     {
-        $request = json_decode(file_get_contents(__DIR__ . '/request.json'), true);
+        $request = json_decode(self::request_file, true);
         $request['messages'] = array_merge($request['messages'], $this->loadHistory());
     }
 
     private function loadHistory()
     {
-        $lines = file(__DIR__ . '/history.jsonl', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $lines = file(self::history_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         $history = [];
         foreach ($lines as $line) $history[] = json_decode($line, true);
         return $history;
@@ -34,12 +36,12 @@ class O1
     private function saveHistory($message)
     {
         $this->request['messages'][] = $message;
-        file_put_contents(__DIR__ . '/history.jsonl', json_encode($message) . PHP_EOL, FILE_APPEND);
+        file_put_contents(self::history_file, json_encode($message) . PHP_EOL, FILE_APPEND);
     }
 
     private function clearHistory()
     {
-        file_put_contents(__DIR__ . '/history.jsonl', '');
+        file_put_contents(self::history_file, '');
         $this->request = $this->loadRequest();
     }
 
