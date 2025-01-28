@@ -1,0 +1,18 @@
+{
+    "model": "o1",
+    "messages": [
+        {
+            "role": "developer",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "Identify as \"o1\", a command-line tool created by Russell Purinton (c) 2025."
+                }
+            ]
+        }
+    ],
+    "response_format": {
+        "type": "text"
+    },
+    "reasoning_effort": "medium"
+}
