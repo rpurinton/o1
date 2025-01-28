@@ -21,16 +21,26 @@ class O1
 
     private function loadRequest()
     {
-        $request = json_decode(file_get_contents(self::request_file), true);
-        $request['messages'] = array_merge($request['messages'], $this->loadHistory());
+        $requestContent = file_get_contents(self::request_file);
+        $request = json_decode($requestContent, true) ?? [];
+        $history = $this->loadHistory();
+        $request['messages'] = array_merge($request['messages'] ?? [], $history);
         return $request;
     }
 
     private function loadHistory()
     {
+        if (!file_exists(self::history_file)) {
+            return [];
+        }
         $lines = file(self::history_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         $history = [];
-        foreach ($lines as $line) $history[] = json_decode($line, true);
+        foreach ($lines as $line) {
+            $decoded = json_decode($line, true);
+            if ($decoded) {
+                $history[] = $decoded;
+            }
+        }
         return $history;
     }
 
@@ -49,21 +59,25 @@ class O1
     public function run()
     {
         while (true) {
-            echo (self::prompt);
+            echo self::prompt;
             $input = trim(fgets(STDIN));
-            if ($input === 'exit') exit(0);
+            if ($input === 'exit') {
+                exit(0);
+            }
             if ($input === 'clear') {
                 $this->clearHistory();
                 continue;
             }
-            echo (self::thinking);
-            $input = ['role' => 'user', 'content' => [['type' => 'text', 'text' => $input]]];
-            $this->saveHistory($input);
+            echo self::thinking;
+            $inputMessage = ['role' => 'user', 'content' => [['type' => 'text', 'text' => $input]]];
+            $this->saveHistory($inputMessage);
             $response = $this->o1->chat()->create($this->request);
-            $response = $response->choices[0]->message->content;
-            $response = ['role' => 'assistant', 'content' => [['type' => 'text', 'text' => $response]]];
-            $this->saveHistory($response);
-            echo ("\r{$response['content'][0]['text']}\n");
+            $content = $response->choices[0]->message->content;
+            $responseMessage = ['role' => 'assistant', 'content' => [['type' => 'text', 'text' => $content]]];
+            $this->saveHistory($responseMessage);
+            $screenWidth = (int)exec('tput cols');
+            $wrapped = wordwrap($content, max($screenWidth - 1, 40), "\n", true);
+            echo "\r\033[K" . $wrapped . PHP_EOL;
         }
     }
 }
