@@ -4,7 +4,7 @@ namespace RPurinton\o1;
 
 use OpenAI\Client;
 
-class o1
+class O1
 {
     const prompt = "o1> ";
     const thinking = "🧠 Thinking...";

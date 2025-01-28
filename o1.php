@@ -4,5 +4,5 @@
 namespace RPurinton\o1;
 
 require_once(__DIR__ . '/vendor/autoload.php');
-$o1 = new o1(getenv('OPENAI_API_KEY'));
+$o1 = new O1(getenv('OPENAI_API_KEY'));
 $o1->run();
